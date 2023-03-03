@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Tic-Tac-Toe</title>
+</head>
+<body>
+    <div class="container">
+    <div class="board">
+        <h2 class="heading"> Player place your X</h2>
+        <form class="board-form">
+            <input type="button" name="00" id="00" value="" class="cells" onclick="btnClick('00')">
+            <input type="button" name="01" id="01" value="" class="cells" onclick="btnClick('01')">
+            <input type="button" name="02" id="02" value="" class="cells" onclick="btnClick('02')">
+            <input type="button" name="10" id="10" value="" class="cells" onclick="btnClick('10')">
+            <input type="button" name="11" id="11" value="" class="cells" onclick="btnClick('11')">
+            <input type="button" name="12" id="12" value="" class="cells" onclick="btnClick('12')">
+            <input type="button" name="20" id="20" value="" class="cells" onclick="btnClick('20')">
+            <input type="button" name="21" id="21" value="" class="cells" onclick="btnClick('21')">
+            <input type="button" name="22" id="22" value="" class="cells" onclick="btnClick('22')">
+        </form>
+        <input type="reset" name="resetBoard" value="Reset Board" class="reset-board" onclick="resetBoard()">
+        <input type="reset" name="newGame" value="New Game" class="new-game" onclick="newGame()">
+    </div>
+
+    <div class="players-form">
+        <label>Enter your name</label>
+        <input type="text" name="player1" value="" class="player1">
+        <label>Enter your oppponent's name</label>
+        <input type="text" name="player2" value="" class="player2">
+        <input type="submit" name="submit" value="Submit" onclick="getPlayersName()">
+    </div>
+</div>
+    <script src="index.js"></script>
+</body>
+</html>

@@ -93,26 +93,14 @@ function placeDice(player, dice, index1 = parseInt(index1), index2 = parseInt(in
             console.log(ticTacArray[0]);
             console.log(ticTacArray[1]);
             console.log(ticTacArray[2]);
-            if (checkValues(player, index1, index2) !== 'won') {
+            if (checkValues(player, index1, index2) !== 'won' && !checkDraw()) {
                 if (player === players[0].name) {
                     askToPlay(players[1]);
                 } else {
                     askToPlay(players[0]);
                 }
             } else {
-                rl.question("\n Do you want to replay the game? (y/n)", function (answer) {
-                    if (answer === 'y' || answer === 'yes') {
-                        displayWinners();
-                        ticTacArray = [
-                            ['-', '-', '-', ],
-                            ['-', '-', '-', ],
-                            ['-', '-', '-', ],
-                        ];
-                        askToPlay(players[0]);
-                    } else {
-                        displayWinners();
-                    }
-                })
+                reStartGame();
             }
         } else {
             console.log("\n this position is already filled \n");
@@ -210,4 +198,32 @@ function displayWinners() {
     players.forEach((player) => {
         console.log(`\n ${player.name} has won ${player.wins} times`);
     });
+}
+
+function reStartGame() {
+    rl.question("\n Do you want to replay the game? (y/n)", function (answer) {
+        if (answer === 'y' || answer === 'yes') {
+            displayWinners();
+            ticTacArray = [
+                ['-', '-', '-', ],
+                ['-', '-', '-', ],
+                ['-', '-', '-', ],
+            ];
+            askToPlay(players[0]);
+        } else {
+            displayWinners();
+        }
+    })
+}
+
+function checkDraw() {
+    let drawArray = ticTacArray.map((array) => {
+        return array.some((item) => item === '-');
+    });
+
+    if (drawArray.includes(true)) {
+        return false;
+    } else {
+        return true;
+    };
 }
