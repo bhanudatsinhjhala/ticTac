@@ -77,8 +77,7 @@ function displayPlayersTurn(index) {
 }
 
 function isPlayerWin(rowIndex, columnIndex, playerTurnValue) {
-  if (checkRow(rowIndex, playerTurnValue)) return true;
-  else if (checkColumn(columnIndex, playerTurnValue)) return true;
+  if (checkRowAndColumn(rowIndex, columnIndex, playerTurnValue)) return true;
   else if (rowIndex !== columnIndex) return checkRightToLeft();
   else if (rowIndex === columnIndex && rowIndex === 1)
     return checkLeftToRight() || checkRightToLeft();
@@ -86,10 +85,14 @@ function isPlayerWin(rowIndex, columnIndex, playerTurnValue) {
   else return false;
 }
 
-function checkRow(rowIndex, playerTurnValue) {
-  return board[rowIndex].every((cellVal) => cellVal === playerTurnValue);
+function checkRowAndColumn(rowIndex, columnIndex, playerTurnValue) {
+  return (
+    board[rowIndex].every((cellVal) => cellVal === playerTurnValue) ||
+    board.every((row) => row[columnIndex] === playerTurnValue)
+  );
 }
 
+function checkColumn(columnIndex, playerTurnValue) {}
 function checkLeftToRight() {
   let count = 0;
   for (let i = 0; i < 3; i++) {
@@ -106,9 +109,6 @@ function checkRightToLeft() {
   if (count === 3) return true;
 }
 
-function checkColumn(columnIndex, playerTurnValue) {
-  return board.every((row) => row[columnIndex] === playerTurnValue);
-}
 function declareWin(playerTurnValue) {
   let index = players.findIndex((player) => player.value === playerTurnValue);
   heading.innerText = `Hurray ${players[index].name} wins`;
@@ -121,21 +121,20 @@ function resetBoard() {
   displayPlayersTurn(0);
 }
 
-function modifyCellsAttribute(disabled, value = null) {
-  cells = [...cells];
-  cells.forEach((cell) => {
-    if (!disabled) cell.removeAttribute("disabled");
-    cell.setAttribute("disabled", true);
-    if (value !== null) cell.value = "";
-  });
-}
-
 function newGame() {
   playersForm.style.display = "block";
   boardForm.style.display = "none";
   emptyBoard();
   modifyCellsAttribute(false, "");
   resetPlayersName();
+}
+function modifyCellsAttribute(disabled, value = null) {
+  cells = [...cells];
+  cells.forEach((cell) => {
+    if (value !== null) cell.value = "";
+    if (!disabled) return cell.removeAttribute("disabled");
+    cell.setAttribute("disabled", true);
+  });
 }
 
 function isGameDraw() {
