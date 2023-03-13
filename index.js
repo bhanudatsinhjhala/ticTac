@@ -70,7 +70,6 @@ function btnClick(indexVal) {
   cell.setAttribute("disabled", true);
   board[rowIndex][columnIndex] = playerTurnValue;
   if (isPlayerWin(rowIndex, columnIndex, playerTurnValue)) {
-    console.log("is Player win ---", "yes");
     declareWin(playerTurnValue);
     return;
   }
@@ -82,7 +81,6 @@ function btnClick(indexVal) {
     return;
   }
   if (playerTurnValue === "x") players[0].positionsOccupied.push(indexVal);
-  console.log("----- playersTurnValue ----- ", playerTurnValue);
   playerTurnValue = players[0].value === playerTurnValue ? "o" : "x";
   let nextPlayerIndex = players.findIndex(
     (player) => player.value === playerTurnValue
@@ -103,7 +101,6 @@ function isPlayerWin(rowIndex, columnIndex, playerTurnValue) {
   else if (rowIndex === columnIndex && rowIndex === 1)
     return checkLeftToRight() || checkRightToLeft();
   else if (rowIndex === columnIndex) return checkLeftToRight();
-  else return false;
 }
 
 function checkRowAndColumn(rowIndex, columnIndex, playerTurnValue) {
@@ -139,27 +136,25 @@ function declareWin(playerTurnValue) {
 
 function robotPlay() {
   let robot = players[1];
-  let robotPosition = robot.positionsOccupied;
+  let robotPositions = robot.positionsOccupied;
   let getWinningPositionOfRobot = getPlayerWinningPosition(
-    robotPosition,
+    robotPositions,
     "robot"
   );
+  let player1 = players[0];
+  let player1PositionsOccupied = player1.positionsOccupied;
   let tacklePosition = getPlayerWinningPosition(
-    players[0].positionsOccupied,
+    player1PositionsOccupied,
     "player1"
   );
-  let positionsOccupied = players[0].positionsOccupied;
-  console.log("---- getWinningPositionOfRobot:", getWinningPositionOfRobot);
-  console.log("-------==== getWinningPositionOfPlayer:===== ", tacklePosition);
-  console.log("positionsOccupied:", positionsOccupied);
-  let player1 = players[0];
-  if (player1.positionsOccupied.length === 1) {
-    console.log("--- robot first turn -----");
-    robotPlaceFirstPosition(player1.positionsOccupied);
+  console.log("getWinningPositionOfRobot", getWinningPositionOfRobot);
+  console.log("tacklePosition", tacklePosition);
+  console.log("======================");
+  if (player1PositionsOccupied.length === 1) {
+    robotPlaceFirstPosition(player1PositionsOccupied);
     return;
   }
   if (getWinningPositionOfRobot.length !== 0) {
-    console.log("--- robot winning turn -----");
     let indexVal = getWinningPositionOfRobot[0].find((value, index) => {
       let rowIndex = value.split("")[0];
       let columnIndex = value.split("")[1];
@@ -168,35 +163,39 @@ function robotPlay() {
         return [rowIndex, columnIndex];
       }
     });
-    console.log("indexVal", indexVal);
     if (indexVal) {
       btnClick(`${indexVal[0]}${indexVal[1]}`);
     }
     return;
   }
   if (tacklePosition.length !== 0) {
-    console.log("--- robot losing turn -----");
-    return putRobotsValue(tacklePosition, positionsOccupied);
+    return putRobotsValue(tacklePosition, player1PositionsOccupied);
   }
-  if (robot.positionsOccupied.length == 1 && tacklePosition.length === 0) {
-    console.log("--- robot second turn -----");
-    let indexVal = robot.positionsOccupied[0];
+  console.log(
+    "if cond",
+    robotPositions.length ||
+      (tacklePosition.length == 0 && getWinningPositionOfRobot.length == 0)
+  );
+  if (
+    robotPositions.length == 1 ||
+    (tacklePosition.length == 0 && getWinningPositionOfRobot.length == 0)
+  ) {
+    let indexVal = robotPositions[0];
     let rowIndex = indexVal.split("")[0];
     let columnIndex = indexVal.split("")[1];
     if (columnIndex == 2 && board[rowIndex][0] === "-") {
-      robot.positionsOccupied.push(`${rowIndex}0`);
+      robotPositions.push(`${rowIndex}0`);
       btnClick(`${rowIndex}0`);
       return;
     } else if (columnIndex == 0 && board[rowIndex][2] === "-") {
-      robot.positionsOccupied.push(`${rowIndex}2`);
+      robotPositions.push(`${rowIndex}2`);
       btnClick(`${rowIndex}2`);
       return;
     }
   }
-  console.log("--- robot random turn -----");
+
   let rowIndex = Math.round(0 + Math.random() * (2 - 0));
   let columnIndex = Math.round(0 + Math.random() * (2 - 0));
-  console.log("random index----", rowIndex, columnIndex);
   while (board[rowIndex][columnIndex] !== "-") {
     rowIndex = Math.round(0 + Math.random() * (2 - 0));
     columnIndex = Math.round(0 + Math.random() * (2 - 0));
@@ -206,7 +205,6 @@ function robotPlay() {
 }
 
 function robotPlaceFirstPosition(positionsOccupied) {
-  console.log("---- Robot's First Position -----");
   let playerPosition = positionsOccupied[0];
   let cornerPositions = ["00", "02", "20", "22"];
   let centerPositions = ["01", "10", "12", "21"];
@@ -227,74 +225,48 @@ function robotPlaceFirstPosition(positionsOccupied) {
   if (isPositionCenter) {
     let rowIndex = playerPosition.split("")[0];
     let columnIndex = playerPosition.split("")[1];
-    console.log("isPositionCenter=-=-=-=-=", rowIndex, columnIndex);
+    let robotSuitablePositions = ["0", "2"];
+    let index = Math.round(0 + Math.random() * 1);
     if (rowIndex == 0 || rowIndex == 2) {
-      console.log("====== row ====", playerPosition);
-      let robotSuitablePositions = ["0", "2"];
-      let index = Math.round(0 + Math.random() * 1);
-      console.log(
-        "isPositionCenter (rowIndex)-=-=-=-",
-        rowIndex,
-        robotSuitablePositions[index]
-      );
       players[1].positionsOccupied.push(
         `${rowIndex}${robotSuitablePositions[index]}`
       );
       btnClick(`${rowIndex}${robotSuitablePositions[index]}`);
       return;
     }
-    if (columnIndex == 0 || columnIndex == 2) {
-      console.log("====== column ====", playerPosition);
-      let robotSuitablePositions = ["0", "2"];
-      let index = Math.round(0 + Math.random() * 1);
-      console.log(
-        "isPositionCenter (columnIndex)-=-=-=-",
-        robotSuitablePositions[index],
-        columnIndex
-      );
-      players[1].positionsOccupied.push(
-        `${robotSuitablePositions[index]}${columnIndex}`
-      );
-      btnClick(`${robotSuitablePositions[index]}${columnIndex}`);
-      return;
-    }
+    players[1].positionsOccupied.push(
+      `${robotSuitablePositions[index]}${columnIndex}`
+    );
+    btnClick(`${robotSuitablePositions[index]}${columnIndex}`);
   }
 }
 function putRobotsValue(tacklePosition, positionsOccupied) {
-  let indexVal;
-  indexVal = tacklePosition[0].filter((value) => {
-    console.log("value:", value);
-    let resultIndex = positionsOccupied.includes(value);
-    console.log(" resultIndex:", resultIndex);
-    if (!resultIndex) {
+  console.log("putRobotsValue===>", tacklePosition);
+  let indexVal = tacklePosition[0].find((value) => {
+    let isPositionIncluded = positionsOccupied.includes(value);
+    if (!isPositionIncluded) {
       return value;
     }
   });
-  console.log("indexVal:", indexVal);
-  let rowIndex = indexVal[0].split("")[0];
-  let columnIndex = indexVal[0].split("")[1];
-  if (board[rowIndex][columnIndex]) {
+  console.log("putRobotsValue", indexVal);
+  let rowIndex = indexVal.split("")[0];
+  let columnIndex = indexVal.split("")[1];
+  if (board[rowIndex][columnIndex] === "-") {
     players[1].positionsOccupied.push(indexVal[0]);
     btnClick(`${indexVal}`);
-  } else {
-    putRobotsValue();
+    return;
   }
 }
 
 function getPlayerWinningPosition(positionsOccupied, player) {
-  console.log(`[${player}] positionsOccupied----`, positionsOccupied);
   let playerWinningPositions = winningPositions.filter((positions) => {
     let count = 0;
-    console.log(`[${player}] positions----`, positions);
     for (let i = 0; i < positions.length; i++) {
       let position = positions[i];
-      console.log(`[${player}] particular position ----`, position);
       let isUsersVal =
         positionsOccupied.find((value) => {
-          console.log("value, positiion", value, position);
           return value === position;
         }) !== undefined;
-      console.log("isUsersVal:", isUsersVal);
       let rowIndex = position.split("")[0];
       let columnIndex = position.split("")[1];
       let isValRobotsValue;
@@ -303,24 +275,18 @@ function getPlayerWinningPosition(positionsOccupied, player) {
       } else {
         isValRobotsValue = board[rowIndex][columnIndex] === "o" ? true : false;
       }
-      console.log("isValRobotsValue:", isValRobotsValue);
       if (isValRobotsValue) {
         count = 0;
         break;
       }
       if (isUsersVal) {
         count++;
-        console.log("count increased", count);
       }
     }
-    console.log(`[${player}] count position----`, count);
     if (count >= 2) {
-      console.log(` [${player}] ---- positions selected:`, positions);
       return positions;
     }
   });
-  // console.log(`[${player}] ----- player winning positions -----`, playerWinningPositions);
-  console.log(`-------- ${player} end-----------`);
   return playerWinningPositions;
 }
 /* Reset or Start New Game Code */
