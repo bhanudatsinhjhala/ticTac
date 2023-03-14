@@ -55,17 +55,10 @@ function btnClick(indexVal) {
   cell.value = playerTurnValue;
   cell.setAttribute("disabled", true);
   board[rowIndex][columnIndex] = playerTurnValue;
-  if (isPlayerWin(rowIndex, columnIndex, playerTurnValue)) {
-    declareWin(playerTurnValue);
-    return;
-  }
-  if (isGameDraw()) {
-    heading.innerText = `OOPs, the Game is Draw!!!!`;
-    setTimeout(() => {
-      resetBoard();
-    }, 3000);
-    return;
-  }
+  const getWinner = checkWinner(rowIndex, columnIndex, playerTurnValue);
+  if (getWinner === "won") return declareWin(playerTurnValue);
+  else if (getWinner === "tie")
+    return (heading.innerText = `OOPs, the Game is Draw!!!!`);
   playerTurnValue = players[0].value === playerTurnValue ? "o" : "x";
   displayPlayersTurn(
     players.findIndex((player) => player.value === playerTurnValue)
@@ -74,6 +67,13 @@ function btnClick(indexVal) {
 
 function displayPlayersTurn(index) {
   heading.innerText = `${players[index].name} place your ${players[index].value}`;
+}
+
+function checkWinner(rowIndex, columnIndex, playerTurnValue) {
+  const isDraw = board.every((row) => row.every((value) => value !== "-"));
+  if (isPlayerWin(rowIndex, columnIndex, playerTurnValue)) return "won";
+  else if (isDraw) return "tie";
+  return false;
 }
 
 function isPlayerWin(rowIndex, columnIndex, playerTurnValue) {
@@ -134,8 +134,4 @@ function modifyCellsAttribute(disabled, value = null) {
     if (!disabled) return cell.removeAttribute("disabled");
     cell.setAttribute("disabled", true);
   });
-}
-
-function isGameDraw() {
-  return board.every((row) => row.every((value) => value !== "-"));
 }
