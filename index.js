@@ -69,14 +69,10 @@ function btnClick(indexVal) {
   cell.value = playerTurnValue;
   cell.setAttribute("disabled", true);
   board[rowIndex][columnIndex] = playerTurnValue;
-  if (isPlayerWin(rowIndex, columnIndex, playerTurnValue)) {
-    declareWin(playerTurnValue);
-    return;
-  }
-  if (isGameDraw()) {
-    heading.innerText = `OOPs, the Game is Draw!!!!`;
-    return;
-  }
+  const getWinner = checkWinner(rowIndex, columnIndex, playerTurnValue);
+  if (getWinner === "won") return declareWin(playerTurnValue);
+  else if (getWinner === "tie")
+    return (heading.innerText = `OOPs, the Game is Draw!!!!`);
   if (playerTurnValue === "x") players[0].positionsOccupied.push(indexVal);
   playerTurnValue = players[0].value === playerTurnValue ? "o" : "x";
   let nextPlayerIndex = players.findIndex(
@@ -92,6 +88,12 @@ function displayPlayersTurn(nextPlayerIndex) {
 
 /* Checking Is Player Won and declare it Code. */
 
+function checkWinner(rowIndex, columnIndex, playerTurnValue) {
+  const isDraw = board.every((row) => row.every((value) => value !== "-"));
+  if (isPlayerWin(rowIndex, columnIndex, playerTurnValue)) return "won";
+  else if (isDraw) return "tie";
+  return false;
+}
 function isPlayerWin(rowIndex, columnIndex, playerTurnValue) {
   if (checkRowAndColumn(rowIndex, columnIndex, playerTurnValue)) return true;
   else if (rowIndex !== columnIndex) return checkRightToLeft();
@@ -294,8 +296,4 @@ function newGame() {
   modifyCellsAttribute(false, "");
   resetPlayersName();
   players[0].positionsOccupied = [];
-}
-
-function isGameDraw() {
-  return board.every((row) => row.every((value) => value !== "-"));
 }
