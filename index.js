@@ -1,12 +1,4 @@
 let board;
-emptyBoard();
-function emptyBoard() {
-  board = [
-    ["-", "-", "-"],
-    ["-", "-", "-"],
-    ["-", "-", "-"],
-  ];
-}
 let players = [
   {
     name: "player1",
@@ -26,10 +18,20 @@ let cells = document.querySelectorAll(".cells");
 
 let playerTurnValue = "x";
 
+emptyBoard();
+function emptyBoard() {
+  board = [
+    ["-", "-", "-"],
+    ["-", "-", "-"],
+    ["-", "-", "-"],
+  ];
+}
+
 function resetPlayersName() {
   player1.value = "";
   player2.value = "";
 }
+
 function getPlayersName() {
   if (!player1.value || !player2.value) {
     alert("Please do not leave fields empty");
@@ -49,67 +51,55 @@ function getPlayersName() {
 }
 
 function btnClick(indexVal) {
-  let rowIndex = indexVal.split("")[0];
-  let columnIndex = indexVal.split("")[1];
-  let cell = document.getElementById(indexVal);
+  const rowIndex = indexVal.split("")[0];
+  const columnIndex = indexVal.split("")[1];
+  const cell = document.getElementById(indexVal);
+
   cell.value = playerTurnValue;
   cell.setAttribute("disabled", true);
+
   board[rowIndex][columnIndex] = playerTurnValue;
-  const getWinner = checkWinner(rowIndex, columnIndex, playerTurnValue);
-  if (getWinner === "won") return declareWin(playerTurnValue);
-  else if (getWinner === "tie")
+  const getWinner = checkWinner(rowIndex, columnIndex);
+
+  if (getWinner == "x") return declareWin(getWinner);
+  else if (getWinner == "o") return declareWin(getWinner);
+  else if (getWinner == "tie")
     return (heading.innerText = `OOPs, the Game is Draw!!!!`);
+
   playerTurnValue = players[0].value === playerTurnValue ? "o" : "x";
-  displayPlayersTurn(
-    players.findIndex((player) => player.value === playerTurnValue)
-  );
+  const index = playerTurnValue == "x" ? 0 : 1;
+  displayPlayersTurn(index);
 }
 
 function displayPlayersTurn(index) {
   heading.innerText = `${players[index].name} place your ${players[index].value}`;
 }
 
-function checkWinner(rowIndex, columnIndex, playerTurnValue) {
-  const isDraw = board.every((row) => row.every((value) => value !== "-"));
-  if (isPlayerWin(rowIndex, columnIndex, playerTurnValue)) return "won";
-  else if (isDraw) return "tie";
-  return false;
-}
-
-function isPlayerWin(rowIndex, columnIndex, playerTurnValue) {
-  if (checkRowAndColumn(rowIndex, columnIndex, playerTurnValue)) return true;
-  else if (rowIndex !== columnIndex) return checkRightToLeft();
-  else if (rowIndex === columnIndex && rowIndex === 1)
-    return checkLeftToRight() || checkRightToLeft();
-  else if (rowIndex === columnIndex) return checkLeftToRight();
-  else return false;
-}
-
-function checkRowAndColumn(rowIndex, columnIndex, playerTurnValue) {
-  return (
-    board[rowIndex].every((cellVal) => cellVal === playerTurnValue) ||
-    board.every((row) => row[columnIndex] === playerTurnValue)
-  );
-}
-
-function checkLeftToRight() {
-  let count = 0;
-  for (let i = 0; i < 3; i++) {
-    if (board[i][i] === playerTurnValue) count++;
-  }
-  if (count === 3) return true;
-}
-
-function checkRightToLeft() {
-  let count = 0;
-  for (let i = 0; i < 3; i++) {
-    if (board[i][2 - i] === playerTurnValue) count++;
-  }
-  if (count === 3) return true;
+function checkWinner(rowIndex, columnIndex) {
+  let emptyCells;
+  board.flat(Infinity).forEach((value) => {
+    if (value == "-") emptyCells++;
+  });
+  if (
+    board[rowIndex][0] == board[rowIndex][1] &&
+    board[rowIndex][0] == board[rowIndex][2]
+  )
+    return board[rowIndex][0];
+  else if (
+    board[0][columnIndex] == board[1][columnIndex] &&
+    board[0][columnIndex] == board[2][columnIndex]
+  )
+    return board[0][columnIndex];
+  else if (board[0][0] == board[1][1] && board[0][0] == board[2][2])
+    return board[0][0];
+  else if (board[0][2] == board[1][1] && board[2][0] == board[0][2])
+    return board[0][2];
+  else if (emptyCells == 0) return "tie";
+  return null;
 }
 
 function declareWin(playerTurnValue) {
-  let index = players.findIndex((player) => player.value === playerTurnValue);
+  const index = playerTurnValue == "x" ? 0 : 1;
   heading.innerText = `Hurray ${players[index].name} wins`;
   modifyCellsAttribute(true);
 }
