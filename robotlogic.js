@@ -24,7 +24,11 @@ function robotsSecondTurn(robotPositions, playerPositions) {
   const rowIndex = +indexVal.split("")[0];
   const columnIndex = +indexVal.split("")[1];
   const cornerPositions = ["00", "20", "02", "22"];
-  if (cornerPositions.includes(playerPositions[1])) {
+  const centerPositions = ["01", "10", "12", "21"];
+  if (
+    cornerPositions.includes(playerPositions[1]) &&
+    !centerPositions.includes(playerPositions[0])
+  ) {
     console.log("corner");
     if (columnIndex == "2" && board[rowIndex][0] === "-")
       return btnClick(`${rowIndex}0`);
@@ -33,13 +37,31 @@ function robotsSecondTurn(robotPositions, playerPositions) {
   const player1Row = rowIndex == 0 ? rowIndex + 1 : rowIndex - 1;
   const player1Column = columnIndex == 0 ? columnIndex + 1 : columnIndex - 1;
   if (
-    board[rowIndex][player1Column] == "x" &&
-    board[player1Row][columnIndex] == "x" &&
-    board[1][1] === "-"
+    centerPositions.includes(playerPositions[0]) &&
+    centerPositions.includes(playerPositions[1])
   ) {
-    console.log("");
+    console.log("besides robot");
     return btnClick(`11`);
-  } else if (board[rowIndex][1] === "-") return btnClick(`${rowIndex}1`);
+  }
+  if (
+    centerPositions.includes(playerPositions[0]) ||
+    cornerPositions.includes(playerPositions[1])
+  ) {
+    const rowIndex = playerPositions[1].split("")[0];
+    if (robotPositions[0].split("")[0] == rowIndex) {
+      const columnIndex = playerPositions[1].split("")[1];
+      const rowIndex = playerPositions[0].split("")[0];
+      return btnClick(`${rowIndex}${columnIndex}`);
+    }
+    return btnClick(`${rowIndex}${1}`);
+  }
+  // else if (board[1][0] == "x" || board[1][2] == "x") {
+  //   console.log("middle row");
+  //   const rowIndex = playerPositions[0].split("")[0];
+  //   // return btnClick(`${rowIndex}1`);
+  //   return btnClick(`11`);
+  // }
+  else if (board[rowIndex][1] === "-") return btnClick(`${rowIndex}1`);
   else return randomPosition();
 }
 
