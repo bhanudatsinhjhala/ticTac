@@ -139,11 +139,5 @@ function robotPlay() {
     return robotsSecondTurn(robotPositions, playerPositions);
   }
 
-  let rowIndex = Math.round(0 + Math.random() * (2 - 0));
-  let columnIndex = Math.round(0 + Math.random() * (2 - 0));
-  while (board[rowIndex][columnIndex] !== "-") {
-    rowIndex = Math.round(0 + Math.random() * (2 - 0));
-    columnIndex = Math.round(0 + Math.random() * (2 - 0));
-  }
-  btnClick(`${rowIndex}${columnIndex}`);
+  randomPosition();
 }

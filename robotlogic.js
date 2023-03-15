@@ -25,6 +25,7 @@ function robotsSecondTurn(robotPositions, playerPositions) {
   const columnIndex = +indexVal.split("")[1];
   const cornerPositions = ["00", "20", "02", "22"];
   if (cornerPositions.includes(playerPositions[1])) {
+    console.log("corner");
     if (columnIndex == "2" && board[rowIndex][0] === "-")
       return btnClick(`${rowIndex}0`);
     if (board[rowIndex][2] === "-") return btnClick(`${rowIndex}2`);
@@ -35,9 +36,11 @@ function robotsSecondTurn(robotPositions, playerPositions) {
     board[rowIndex][player1Column] == "x" &&
     board[player1Row][columnIndex] == "x" &&
     board[1][1] === "-"
-  )
+  ) {
+    console.log("");
     return btnClick(`11`);
-  if (board[rowIndex][1] === "-") return btnClick(`${rowIndex}1`);
+  } else if (board[rowIndex][1] === "-") return btnClick(`${rowIndex}1`);
+  else return randomPosition();
 }
 
 function tacklePlayer1(tacklePosition, board) {
@@ -74,4 +77,14 @@ function getPlayerWinningPosition(positionsOccupied, player) {
     if (count >= 2) return positions;
   });
   return playerWinningPositions;
+}
+
+function randomPosition() {
+  let rowIndex = Math.round(0 + Math.random() * (2 - 0));
+  let columnIndex = Math.round(0 + Math.random() * (2 - 0));
+  while (board[rowIndex][columnIndex] !== "-") {
+    rowIndex = Math.round(0 + Math.random() * (2 - 0));
+    columnIndex = Math.round(0 + Math.random() * (2 - 0));
+  }
+  btnClick(`${rowIndex}${columnIndex}`);
 }
