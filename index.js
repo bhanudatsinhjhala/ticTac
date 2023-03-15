@@ -22,7 +22,6 @@ let players = [
   },
 ];
 let player1 = document.querySelector(".player1");
-// let player2 = document.querySelector(".player2");
 let playersForm = document.querySelector(".players-form");
 let boardForm = document.querySelector(".board");
 let heading = document.querySelector(".heading");
