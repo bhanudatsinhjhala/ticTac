@@ -22,7 +22,7 @@ function newGame() {
   boardForm.style.display = "none";
   emptyBoard();
   modifyCellsAttribute(false, "");
-  resetPlayersName();
+  player1.value = "";
   emptyPositionOccupied();
 }
 

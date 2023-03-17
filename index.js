@@ -96,6 +96,10 @@ function checkWinner(rowIndex, columnIndex) {
     board[0][columnIndex] == board[2][columnIndex]
   )
     return board[0][columnIndex];
+  else if (board[0][0] == board[1][1] && board[0][0] == board[2][2])
+    return board[0][0];
+  else if (board[0][2] == board[1][1] && board[0][2] == board[2][0])
+    return board[0][2];
   else if (emptyCells == 0) return "tie";
   return null;
 }
@@ -135,9 +139,5 @@ function robotPlay() {
   if (tacklePosition.length !== 0) {
     return tacklePlayer1(tacklePosition, board);
   }
-  if (robotPositions.length == 1) {
-    return robotsSecondTurn(robotPositions, playerPositions);
-  }
-
   randomPosition();
 }
