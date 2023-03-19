@@ -136,7 +136,8 @@ function robotPlay() {
     }
   }
   const tacklePosition = getPlayerWinningPosition(playerPositions, "player1");
-  if (tacklePosition.length !== 0) {
+  const randomValue = Math.round(Math.random() * 1);
+  if (tacklePosition.length !== 0 && randomValue == 0) {
     return tacklePlayer1(tacklePosition, board);
   }
   randomPosition();
